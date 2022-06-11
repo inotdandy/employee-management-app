@@ -16,7 +16,14 @@
                 {{ Session::get('error') }}
               </div>
             @endif
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <form class="form-inline" method="GET" action="{{route('user.index')}}">
+                <div class="form-group mb-2">
+                  <label for="search" class="sr-only">Search</label>
+                  <input type="text" class="form-control p-2" id="search" name="search">
+                </div>
+                <button type="submit" class="btn btn-primary mb-2 ml-2">Search</button>
+              </form>
                 <a href="{{route('user.create')}}" class="float-right">Create User</a>
             </div>
             <div class="card-body">
