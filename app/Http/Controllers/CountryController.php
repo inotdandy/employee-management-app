@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Country;
 use Illuminate\Http\Request;
 use App\Http\Requests\CountryStoreRequest;
+use App\Http\Requests\CountryUpdateRequest;
 
 class CountryController extends Controller
 {
@@ -71,9 +72,9 @@ class CountryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Country $country)
     {
-        //
+        return view('countries.edit', ['country' => $country]);
     }
 
     /**
@@ -83,9 +84,11 @@ class CountryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CountryUpdateRequest $request, Country $country)
     {
-        //
+        $country->update($request->all());
+
+        return redirect()->route('country.index')->with(['success' => 'Country is successfully updated']);
     }
 
     /**
@@ -94,8 +97,10 @@ class CountryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Country $country)
     {
-        //
+        $country->delete();
+
+        return redirect()->route('country.index')->with(['success' => 'Country successfully deleted']);
     }
 }
