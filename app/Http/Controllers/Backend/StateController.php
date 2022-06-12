@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Backend;
 
+use App\Models\State;
 use App\Models\Country;
 use Illuminate\Http\Request;
-use App\Http\Requests\CountryStoreRequest;
-use App\Http\Requests\CountryUpdateRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StateStoreRequest;
 
-class CountryController extends Controller
+class StateController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,17 +18,15 @@ class CountryController extends Controller
     public function index(Request $request)
     {
         if($request->has('search')){
-            $countries = Country::where('name', 'like', "%{$request->search}%")
-                         ->orWhere('country_code', 'like', "%{$request->search}%")
-                         ->get();
+            $states = State::where('name', 'like', "%{$request->search}%")
+                        ->with('country')
+                        ->get();
         }else{
 
-            $countries = Country::all();
+            $states = State::with('country')->get();
         }
-
-        return view('countries.index', [
-            'countries' => $countries
-        ]);
+        
+        return view('states.index', ['states' => $states]);
     }
 
     /**
@@ -37,7 +36,10 @@ class CountryController extends Controller
      */
     public function create()
     {
-        return view('countries.create');
+        $countries = Country::all();
+
+        return view('states.create', ['countries' => $countries]);
+        
     }
 
     /**
@@ -46,13 +48,14 @@ class CountryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CountryStoreRequest $request)
+    public function store(StateStoreRequest $request)
     {
-        Country::create($request->all());
-
-        return redirect()->route('country.index')->with([
-            'success' => 'New country successfully created'
+        State::create([
+            'name' => $request->name,
+            'country_id' => $request->country_id
         ]);
+
+        return redirect()->route('state.index')->with(['success' => 'New state successfully created.']);
     }
 
     /**
@@ -63,7 +66,7 @@ class CountryController extends Controller
      */
     public function show($id)
     {
-        //
+       
     }
 
     /**
@@ -72,9 +75,9 @@ class CountryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Country $country)
+    public function edit($id)
     {
-        return view('countries.edit', ['country' => $country]);
+        //
     }
 
     /**
@@ -84,11 +87,9 @@ class CountryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CountryUpdateRequest $request, Country $country)
+    public function update(Request $request, $id)
     {
-        $country->update($request->all());
-
-        return redirect()->route('country.index')->with(['success' => 'Country is successfully updated']);
+        //
     }
 
     /**
@@ -97,10 +98,8 @@ class CountryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Country $country)
+    public function destroy($id)
     {
-        $country->delete();
-
-        return redirect()->route('country.index')->with(['success' => 'Country successfully deleted']);
+        //
     }
 }

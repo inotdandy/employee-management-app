@@ -10,4 +10,9 @@ class Country extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function states(){
+
+        return $thi->hasMany(State::class);
+    }
 }
